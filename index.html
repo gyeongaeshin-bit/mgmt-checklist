@@ -87,25 +87,13 @@
     padding-top: var(--safe-top);
     border-bottom: 1px solid var(--line);
   }
+  .topbar.hidden { display: none; }
   .topbar-inner {
     display: flex;
     align-items: center;
-    padding: 12px 18px;
+    padding: 10px 18px;
     gap: 10px;
-    min-height: 48px;
-  }
-  .brand {
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: var(--ink);
-  }
-  .brand .accent { color: var(--c4); margin: 0 2px; }
-  .brand-sub {
-    font-size: 10.5px;
-    color: var(--ink-muted);
-    letter-spacing: 0.02em;
-    margin-left: auto;
+    min-height: 44px;
   }
   .back-btn {
     width: 32px;
@@ -194,11 +182,12 @@
   #intro {
     padding: 0 22px 40px;
     padding-bottom: calc(40px + var(--safe-bottom));
+    padding-top: var(--safe-top);
     justify-content: space-between;
-    min-height: calc(100vh - 48px - var(--safe-top));
-    min-height: calc(100svh - 48px - var(--safe-top));
+    min-height: calc(100vh - var(--safe-top));
+    min-height: calc(100svh - var(--safe-top));
   }
-  .intro-top { padding-top: 36px; }
+  .intro-top { padding-top: 40px; }
   .intro-kicker {
     font-size: 12px;
     font-weight: 700;
@@ -742,14 +731,12 @@
 
 <div class="app">
 
-  <!-- ===== 상단 바 (intro 제외 전 뷰에 공통) ===== -->
-  <div class="topbar" id="topbar">
+  <!-- ===== 상단 바 (퀴즈 화면에서만 노출: 뒤로가기 + 진행률) ===== -->
+  <div class="topbar hidden" id="topbar">
     <div class="topbar-inner">
       <button class="back-btn hidden" id="backBtn" aria-label="이전">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
       </button>
-      <div class="brand">Medistream <span class="accent">·</span> 경영세션</div>
-      <div class="brand-sub">K-MEX 2026</div>
     </div>
     <div class="progress-wrap" id="progressWrap" style="display:none">
       <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
@@ -1016,6 +1003,7 @@
     quiz: document.getElementById('quiz'),
     result: document.getElementById('result'),
   };
+  const topbar = document.getElementById('topbar');
   const el = {
     startBtn: document.getElementById('startBtn'),
     backBtn: document.getElementById('backBtn'),
@@ -1041,6 +1029,8 @@
     Object.entries(views).forEach(([k, v]) => {
       v.classList.toggle('active', k === name);
     });
+    // 상단바는 퀴즈에서만 노출 (뒤로가기 + 진행률)
+    topbar.classList.toggle('hidden', name !== 'quiz');
     window.scrollTo({ top: 0, behavior: 'instant' });
   }
 
