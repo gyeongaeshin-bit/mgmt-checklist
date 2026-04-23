@@ -1,0 +1,1249 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0e1a2b">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="description" content="나의 경영 점수는 몇 점일까? 메디스트림 경영세션이 제공하는 20문항 2분 진단">
+<meta property="og:title" content="나의 경영 점수는 몇 점일까? | 메디스트림 경영세션">
+<meta property="og:description" content="20문항 2분 · 한의원 대표를 위한 셀프 진단">
+<title>나의 경영 점수는 몇 점일까? | 메디스트림 경영세션</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.css">
+<style>
+  :root {
+    --ink: #0e1a2b;
+    --ink-soft: #3b4a5f;
+    --ink-muted: #6b7a90;
+    --line: #e5e9f0;
+    --line-strong: #c9d2de;
+    --bg: #ffffff;
+    --bg-soft: #f7f9fc;
+    --bg-body: #eceef3;
+
+    --c1: #2563eb;
+    --c2: #7c3aed;
+    --c3: #ea580c;
+    --c4: #dc2626;
+    --c5: #059669;
+
+    --c1-soft: #dbe8fb;
+    --c2-soft: #e8dcfb;
+    --c3-soft: #ffdfc7;
+    --c4-soft: #ffd4d4;
+    --c5-soft: #c8f0de;
+
+    --shadow: 0 1px 2px rgba(14,26,43,0.04), 0 6px 20px rgba(14,26,43,0.06);
+
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+    color: var(--ink);
+    background: var(--bg-body);
+    -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: contain;
+  }
+  body {
+    min-height: 100vh;
+    min-height: 100svh;
+  }
+  button {
+    font-family: inherit;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: inherit;
+  }
+  a { color: inherit; text-decoration: none; }
+
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    background: var(--bg);
+    min-height: 100vh;
+    min-height: 100svh;
+    position: relative;
+    box-shadow: 0 0 40px rgba(0,0,0,0.04);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ========== 공통 헤더 ========== */
+  .topbar {
+    position: sticky;
+    top: 0;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    z-index: 10;
+    padding-top: var(--safe-top);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    display: flex;
+    align-items: center;
+    padding: 12px 18px;
+    gap: 10px;
+    min-height: 48px;
+  }
+  .brand {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+  }
+  .brand .accent { color: var(--c4); margin: 0 2px; }
+  .brand-sub {
+    font-size: 10.5px;
+    color: var(--ink-muted);
+    letter-spacing: 0.02em;
+    margin-left: auto;
+  }
+  .back-btn {
+    width: 32px;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: var(--ink-soft);
+    font-size: 20px;
+    margin-left: -8px;
+  }
+  .back-btn:active { background: var(--bg-soft); }
+  .back-btn.hidden { visibility: hidden; }
+
+  /* 진행바 */
+  .progress-wrap {
+    padding: 0 18px 10px;
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--line);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--ink);
+    border-radius: 99px;
+    transition: width 0.35s cubic-bezier(0.2, 0.8, 0.2, 1), background 0.25s;
+  }
+  .progress-fill.s1 { background: var(--c1); }
+  .progress-fill.s2 { background: var(--c2); }
+  .progress-fill.s3 { background: var(--c3); }
+  .progress-fill.s4 { background: var(--c4); }
+  .progress-fill.s5 { background: var(--c5); }
+
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    font-weight: 600;
+  }
+  .progress-meta .area-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .progress-meta .dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+  }
+  .dot.s1 { background: var(--c1); }
+  .dot.s2 { background: var(--c2); }
+  .dot.s3 { background: var(--c3); }
+  .dot.s4 { background: var(--c4); }
+  .dot.s5 { background: var(--c5); }
+
+  /* ========== 뷰 전환 ========== */
+  .view {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    animation: fadeIn 0.28s ease-out;
+  }
+  .view.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(14px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideInReverse {
+    from { opacity: 0; transform: translateX(-14px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* ========== Intro (#intro) ========== */
+  #intro {
+    padding: 0 22px 40px;
+    padding-bottom: calc(40px + var(--safe-bottom));
+    justify-content: space-between;
+    min-height: calc(100vh - 48px - var(--safe-top));
+    min-height: calc(100svh - 48px - var(--safe-top));
+  }
+  .intro-top { padding-top: 36px; }
+  .intro-kicker {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c4);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .intro-title {
+    font-size: 32px;
+    line-height: 1.18;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin: 0 0 14px;
+  }
+  .intro-title em {
+    font-style: normal;
+    color: var(--ink);
+    position: relative;
+    background: linear-gradient(180deg, transparent 62%, rgba(220, 38, 38, 0.18) 62%);
+  }
+  .intro-sub {
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin-bottom: 28px;
+  }
+
+  .intro-meta {
+    display: flex;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  .intro-meta .chip {
+    flex: 1;
+    padding: 14px 14px;
+    background: var(--bg-soft);
+    border-radius: 12px;
+    text-align: center;
+  }
+  .intro-meta .chip .num {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .intro-meta .chip .lbl {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    margin-top: 2px;
+    font-weight: 600;
+  }
+
+  .intro-scale {
+    background: var(--bg-soft);
+    border-radius: 12px;
+    padding: 16px 18px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+  .intro-scale .s-title {
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+  .intro-scale .row {
+    display: flex;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 11.5px;
+  }
+  .intro-scale .row span {
+    flex: 1;
+    text-align: center;
+  }
+  .intro-scale .row b {
+    display: block;
+    color: var(--ink);
+    font-size: 13px;
+    margin-bottom: 2px;
+  }
+
+  .intro-areas {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-bottom: 24px;
+  }
+  .intro-areas .pill {
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+    padding: 8px 4px;
+    border-radius: 8px;
+    line-height: 1.3;
+  }
+  .intro-areas .pill.s1 { background: var(--c1-soft); color: var(--c1); }
+  .intro-areas .pill.s2 { background: var(--c2-soft); color: var(--c2); }
+  .intro-areas .pill.s3 { background: var(--c3-soft); color: var(--c3); }
+  .intro-areas .pill.s4 { background: var(--c4-soft); color: var(--c4); }
+  .intro-areas .pill.s5 { background: var(--c5-soft); color: var(--c5); }
+
+  .intro-bottom {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .cta-btn {
+    width: 100%;
+    padding: 17px 18px;
+    background: var(--ink);
+    color: #fff;
+    border-radius: 14px;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    transition: transform 0.08s ease;
+    box-shadow: 0 6px 20px rgba(14,26,43,0.18);
+  }
+  .cta-btn:active { transform: scale(0.985); }
+  .cta-note {
+    text-align: center;
+    font-size: 11px;
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  /* ========== Question (#quiz) ========== */
+  #quiz {
+    padding: 0 22px 28px;
+  }
+  .q-area-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 5px 10px;
+    border-radius: 99px;
+    margin: 18px 0 14px;
+  }
+  .q-area-label.s1 { background: var(--c1-soft); color: var(--c1); }
+  .q-area-label.s2 { background: var(--c2-soft); color: var(--c2); }
+  .q-area-label.s3 { background: var(--c3-soft); color: var(--c3); }
+  .q-area-label.s4 { background: var(--c4-soft); color: var(--c4); }
+  .q-area-label.s5 { background: var(--c5-soft); color: var(--c5); }
+
+  .q-text {
+    font-size: 21px;
+    line-height: 1.4;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    margin: 0 0 26px;
+    min-height: 88px;
+  }
+
+  .q-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .opt-btn {
+    width: 100%;
+    text-align: left;
+    padding: 16px 18px;
+    background: var(--bg);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: transform 0.08s, background 0.12s, border-color 0.12s;
+  }
+  .opt-btn:active { transform: scale(0.988); background: var(--bg-soft); }
+  .opt-btn .num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--bg-soft);
+    color: var(--ink-soft);
+    font-size: 13px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .opt-btn.selected {
+    border-color: var(--ink);
+    background: var(--ink);
+    color: #fff;
+  }
+  .opt-btn.selected .num {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+  }
+
+  .q-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    font-weight: 600;
+  }
+
+  /* ========== Result (#result) ========== */
+  #result {
+    padding: 0 0 40px;
+    padding-bottom: calc(40px + var(--safe-bottom));
+  }
+  .result-hero {
+    padding: 28px 22px 26px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--bg-soft) 0%, transparent 100%);
+  }
+  .result-kicker {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ink-muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 10px;
+  }
+  .result-score {
+    font-size: 64px;
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .result-score small {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--ink-muted);
+    letter-spacing: -0.01em;
+    margin-left: 2px;
+  }
+  .result-grade-name {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 99px;
+    font-size: 14px;
+    font-weight: 800;
+    margin-top: 10px;
+    background: var(--ink);
+    color: #fff;
+  }
+  .result-grade-name.g1 { background: #f59e0b; }
+  .result-grade-name.g2 { background: #059669; }
+  .result-grade-name.g3 { background: #2563eb; }
+  .result-grade-name.g4 { background: #dc2626; }
+
+  .section-block {
+    padding: 20px 22px;
+  }
+  .section-block + .section-block { border-top: 8px solid var(--bg-soft); }
+
+  .step-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .step-head .num {
+    background: var(--ink);
+    color: #fff;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 99px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+  .step-head h3 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  /* 등급 카드 4개 */
+  .grade-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .grade-card {
+    padding: 13px 15px;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    transition: border-color 0.2s;
+  }
+  .grade-card .gh {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 3px;
+  }
+  .grade-card .gname {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .grade-card .grange {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--ink-muted);
+  }
+  .grade-card .gdesc {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--ink-soft);
+  }
+  .grade-card.g1 .gname { color: #b45309; }
+  .grade-card.g2 .gname { color: #047857; }
+  .grade-card.g3 .gname { color: #1d4ed8; }
+  .grade-card.g4 .gname { color: #b91c1c; }
+  .grade-card.active { border-color: var(--ink); background: var(--bg-soft); }
+  .grade-card.active .gh::after {
+    content: '← 나';
+    font-size: 11px;
+    color: var(--ink);
+    font-weight: 800;
+    margin-left: auto;
+  }
+
+  /* 영역별 점수 */
+  .area-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .area-row:last-child { border-bottom: none; }
+  .area-row .abar-wrap {
+    flex: 1;
+    min-width: 0;
+  }
+  .area-row .atop {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+    gap: 6px;
+  }
+  .area-row .aname {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+  .area-row .ascore {
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+  .area-row .ascore small {
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-weight: 600;
+  }
+  .area-row .abar {
+    height: 6px;
+    background: var(--line);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .area-row .afill {
+    height: 100%;
+    border-radius: 99px;
+  }
+  .area-row.s1 .afill { background: var(--c1); }
+  .area-row.s2 .afill { background: var(--c2); }
+  .area-row.s3 .afill { background: var(--c3); }
+  .area-row.s4 .afill { background: var(--c4); }
+  .area-row.s5 .afill { background: var(--c5); }
+
+  .area-row .ahook {
+    font-size: 11.5px;
+    color: var(--ink-muted);
+    margin-top: 6px;
+    line-height: 1.45;
+  }
+  .area-row .aimpact {
+    font-size: 10px;
+    color: var(--ink-muted);
+    letter-spacing: 1px;
+    margin-left: 4px;
+  }
+
+  .score-legend {
+    margin-top: 14px;
+    padding: 10px 12px;
+    background: var(--bg-soft);
+    border-radius: 8px;
+    font-size: 11px;
+    color: var(--ink-muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  /* 추천 강의 */
+  .lectures {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .lec-card {
+    border-radius: 12px;
+    padding: 14px 15px 12px;
+  }
+  .lec-card.s1 { background: var(--c1-soft); }
+  .lec-card.s2 { background: var(--c2-soft); }
+  .lec-card.s3 { background: var(--c3-soft); }
+  .lec-card.s4 { background: var(--c4-soft); }
+  .lec-card.s5 { background: var(--c5-soft); }
+  .lec-card h4 {
+    margin: 0 0 3px;
+    font-size: 14px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .lec-card .lec-hook {
+    font-size: 11.5px;
+    color: var(--ink-soft);
+    margin-bottom: 9px;
+    line-height: 1.45;
+  }
+  .lec-card .lec-item {
+    display: flex;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 12.5px;
+    line-height: 1.4;
+    border-top: 1px solid rgba(14,26,43,0.08);
+  }
+  .lec-card .lec-item:first-of-type { border-top: none; padding-top: 4px; }
+  .lec-card .lec-round {
+    font-size: 10.5px;
+    font-weight: 800;
+    background: rgba(255,255,255,0.65);
+    padding: 2px 6px;
+    border-radius: 6px;
+    height: 20px;
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .lec-card .lec-title {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* CTA */
+  .cta-block {
+    margin: 20px 22px 0;
+    padding: 22px 20px;
+    background: linear-gradient(135deg, #0e1a2b 0%, #2a3a55 100%);
+    color: #fff;
+    border-radius: 16px;
+    text-align: center;
+  }
+  .cta-block .cta-title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .cta-block .cta-desc {
+    font-size: 12.5px;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.55;
+    margin-bottom: 18px;
+  }
+  .cta-block .cta-primary {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    background: #fff;
+    color: var(--ink);
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    transition: transform 0.08s;
+  }
+  .cta-block .cta-primary:active { transform: scale(0.985); }
+
+  .result-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 22px 22px 0;
+  }
+  .ghost-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--bg);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--ink-soft);
+    transition: transform 0.08s;
+  }
+  .ghost-btn:active { transform: scale(0.985); }
+
+  .footer-disclaimer {
+    text-align: center;
+    font-size: 10.5px;
+    color: var(--ink-muted);
+    line-height: 1.6;
+    margin: 22px 22px 0;
+  }
+
+  /* ========== 반응형 ========== */
+  @media (max-width: 360px) {
+    .intro-title { font-size: 28px; }
+    .q-text { font-size: 19px; }
+    .result-score { font-size: 56px; }
+  }
+  @media (min-width: 481px) {
+    body { padding: 20px 0; }
+    .app {
+      border-radius: 18px;
+      min-height: auto;
+      overflow: hidden;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ===== 상단 바 (intro 제외 전 뷰에 공통) ===== -->
+  <div class="topbar" id="topbar">
+    <div class="topbar-inner">
+      <button class="back-btn hidden" id="backBtn" aria-label="이전">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+      </button>
+      <div class="brand">Medistream <span class="accent">·</span> 경영세션</div>
+      <div class="brand-sub">K-MEX 2026</div>
+    </div>
+    <div class="progress-wrap" id="progressWrap" style="display:none">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+      <div class="progress-meta">
+        <span class="area-badge"><span class="dot" id="progressDot"></span><span id="progressArea">리더십 &amp; 팀 신뢰</span></span>
+        <span><b id="progressQ">1</b> / 20</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VIEW: Intro ===== -->
+  <section class="view active" id="intro">
+    <div class="intro-top">
+      <div class="intro-kicker">K-MEX 2026 · 한의원 대표 셀프 진단</div>
+      <h1 class="intro-title">나의 <em>경영 점수</em>는<br>몇 점일까?</h1>
+      <p class="intro-sub">
+        20문항으로 나의 리더십·시스템·의사결정을<br>
+        2분 안에 빠르게 짚어봅니다.
+      </p>
+
+      <div class="intro-meta">
+        <div class="chip"><div class="num">20</div><div class="lbl">문항</div></div>
+        <div class="chip"><div class="num">5</div><div class="lbl">영역</div></div>
+        <div class="chip"><div class="num">2분</div><div class="lbl">소요</div></div>
+      </div>
+
+      <div class="intro-scale">
+        <div class="s-title">평소 나의 모습에 가장 가까운 점수에 체크하세요.</div>
+        <div class="row">
+          <span><b>1</b>전혀<br>아니다</span>
+          <span><b>2</b>아니다</span>
+          <span><b>3</b>보통</span>
+          <span><b>4</b>그렇다</span>
+          <span><b>5</b>매우<br>그렇다</span>
+        </div>
+      </div>
+
+      <div class="intro-areas">
+        <div class="pill s1">리더십</div>
+        <div class="pill s2">시스템</div>
+        <div class="pill s3">의사결정</div>
+        <div class="pill s4">피드백</div>
+        <div class="pill s5">자기관리</div>
+      </div>
+    </div>
+
+    <div class="intro-bottom">
+      <button class="cta-btn" id="startBtn">진단 시작하기</button>
+      <div class="cta-note">* 짧은 시간에 현재 상태를 빠르게 짚어보는 간이 진단입니다. 참고 자료로만 확인해주세요.</div>
+    </div>
+  </section>
+
+  <!-- ===== VIEW: Quiz ===== -->
+  <section class="view" id="quiz">
+    <div class="q-area-label" id="qAreaLabel"><span>영역 1</span><span id="qAreaName">리더십 &amp; 팀 신뢰</span></div>
+    <h2 class="q-text" id="qText">팀원들이 나를 존중(Respect)하고 있나요?</h2>
+    <div class="q-options" id="qOptions">
+      <!-- JS가 5개 버튼 렌더 -->
+    </div>
+    <div class="q-footer">답변하면 자동으로 다음 문항으로 넘어갑니다</div>
+  </section>
+
+  <!-- ===== VIEW: Result ===== -->
+  <section class="view" id="result">
+    <div class="result-hero">
+      <div class="result-kicker">나의 경영 점수</div>
+      <div class="result-score"><span id="resScore">0</span><small>/ 100</small></div>
+      <div class="result-grade-name" id="resGradeName">성장형 경영자</div>
+    </div>
+
+    <!-- STEP 1 : 등급 -->
+    <div class="section-block">
+      <div class="step-head"><span class="num">STEP 1</span><h3>총점으로 보는 나의 경영 단계</h3></div>
+      <div class="grade-list" id="gradeList">
+        <!-- JS 렌더 -->
+      </div>
+    </div>
+
+    <!-- STEP 2 : 영역별 -->
+    <div class="section-block">
+      <div class="step-head"><span class="num">STEP 2</span><h3>영역별 점수로 보는 나의 강점 &amp; 약점</h3></div>
+      <div id="areaList">
+        <!-- JS 렌더 -->
+      </div>
+      <div class="score-legend">
+        🟢 16–20점 강점 &nbsp;·&nbsp; 🟡 11–15점 보통 &nbsp;·&nbsp; 🔴 4–10점 개선 필요
+      </div>
+    </div>
+
+    <!-- STEP 3 : 추천 강의 -->
+    <div class="section-block">
+      <div class="step-head"><span class="num">STEP 3</span><h3>영역별 성장 포인트 &amp; 추천 강의</h3></div>
+      <div class="lectures" id="lectureList">
+        <!-- JS 렌더 -->
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-block">
+      <div class="cta-title">경영세션 모집 알림 신청</div>
+      <div class="cta-desc">차기 기수 모집 오픈 시 가장 먼저 알려드립니다.<br>지속 가능한 성장이 고민이라면 신청하세요.</div>
+      <a class="cta-primary" id="ctaLink" href="https://forms.gle/YetnVUYR8PsszgxZ6" target="_blank" rel="noopener">알림 신청하기 →</a>
+    </div>
+
+    <div class="result-footer">
+      <button class="ghost-btn" id="restartBtn">다시 진단하기</button>
+    </div>
+
+    <div class="footer-disclaimer">
+      * 짧은 시간에 현재 상태를 빠르게 짚어보는 간이 진단입니다.<br>참고 자료로만 확인해주세요.
+    </div>
+  </section>
+
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  // ========== 데이터 ==========
+  const AREAS = [
+    {
+      key: 's1',
+      num: 1,
+      name: '리더십 & 팀 신뢰',
+      hook: '정기 1:1 · 위임 · 갈등 관리로 신뢰 기반의 팀 만들기',
+      diagnosis: '팀 관계·신뢰가 무너지면 아무리 좋은 전략도 실행되지 않습니다',
+      impact: '★★',
+      lectures: [
+        ['2회차', '1:1 하는 법'],
+        ['3회차', '관리자가 되는 법'],
+        ['7회차', '직원들은 우리 한의원을 어떻게 인식하고 있을까?'],
+      ],
+    },
+    {
+      key: 's2',
+      num: 2,
+      name: '시스템 & 체계화',
+      hook: '단계별 전략 · 회고 루틴 · 지표 기반 경영 시스템 정립',
+      diagnosis: '단계별 전략·회고·지표 경영이 반복 가능한 성과 구조를 만듭니다',
+      impact: '★★★★',
+      lectures: [
+        ['1회차', '반드시 해야 하는 10가지 목표 설정법 (OKR)'],
+        ['2회차', '일간 회의(Scrum)를 꼭 해야 하는 이유'],
+        ['5회차', '지표 경영으로 환자 관리하는 법'],
+      ],
+    },
+    {
+      key: 's3',
+      num: 3,
+      name: '의사결정 & 실행력',
+      hook: '프레임워크 · 수치화 · 우선순위로 속도 올리기',
+      diagnosis: '대표의 결정 속도가 한의원의 성장 속도를 결정합니다',
+      impact: '★★★',
+      lectures: [
+        ['2회차', '의사결정 내리는 법'],
+        ['1회차', '어떻게 생각해야 경영일까'],
+        ['6회차', '비급여 기획 프로세스'],
+      ],
+    },
+    {
+      key: 's4',
+      num: 4,
+      name: '피드백 & 인력관리',
+      hook: '성과 기준 · 보상 · 교육으로 팀 성과 끌어올리기',
+      diagnosis: '뽑은 뒤의 기준·평가·교육이 팀 성과를 끌어올립니다',
+      impact: '★★',
+      lectures: [
+        ['4회차', '인센티브 가이드라인'],
+        ['2회차', '팀원을 교육하는 법'],
+        ['4회차', '성과 평가를 하는 법'],
+      ],
+    },
+    {
+      key: 's5',
+      num: 5,
+      name: '자기관리 & 성장',
+      hook: '대표의 동기 · 성장 원칙 · 루틴으로 지속 성장 엔진 만들기',
+      diagnosis: '대표의 에너지·성장 욕구가 한의원의 지속 성장을 이끕니다',
+      impact: '★★★★',
+      lectures: [
+        ['1회차', '대표의 한계를 결정하는 10가지 질문'],
+        ['1회차', '대표를 달라지게 하는 10가지 리프레이밍'],
+        ['3회차', '윤리 경영 기준 세우기'],
+      ],
+    },
+  ];
+
+  const QUESTIONS = [
+    // 영역 1 — 리더십 & 팀 신뢰
+    { area: 0, text: '팀원들이 나를 존중(Respect)하고 있나요?' },
+    { area: 0, text: '팀원들과 1:1 미팅을 정기적으로 하고 있나요?' },
+    { area: 0, text: '팀 내 갈등 상황을 잘 조율해서 해결하시나요?' },
+    { area: 0, text: '일하는 높은 기준을 갖고, 본인과 팀원들에게 요구하시나요?' },
+    // 영역 2 — 시스템 & 체계화
+    { area: 1, text: '우리 한의원의 내부 정책과 행동 기준이 문서화되어 있나요?' },
+    { area: 1, text: '일간 / 주간 / 월간 회고 루틴이 자리 잡혀 있나요?' },
+    { area: 1, text: '우리 한의원의 단기·장기 전략을 세우고 이에 맞춰 경영하고 계신가요?' },
+    { area: 1, text: '계획과 정책 기준 업데이트가 정기적으로 공지되고 있나요?' },
+    // 영역 3 — 의사결정 & 실행력
+    { area: 2, text: '의사결정을 명확하고 빠르게 내리시나요?' },
+    { area: 2, text: '직접 할 일과 위임할 일을 명확하게 구분하시나요?' },
+    { area: 2, text: '복잡한 문제를 간단하게 정의하고 해결 방향을 잡으실 수 있나요?' },
+    { area: 2, text: '팀의 업무 효율성을 획기적으로 개선하시는 편인가요?' },
+    // 영역 4 — 피드백 & 인력관리
+    { area: 3, text: '성과평가 시스템에 따라 팀원을 정기적으로 평가하고 계신가요?' },
+    { area: 3, text: '팀원들이 성장할 방향성을 잘 제시하시나요?' },
+    { area: 3, text: '정기 교육을 진행하고, 교육 후 팀원의 변화가 눈에 보이시나요?' },
+    { area: 3, text: '컴플레인을 해결해서 새로운 시스템을 만들고 계신가요?' },
+    // 영역 5 — 자기관리 & 성장
+    { area: 4, text: '스스로 동기부여가 잘 되어 있으신가요?' },
+    { area: 4, text: '더 나아지기 위한 학습·성장 욕구가 높으신가요?' },
+    { area: 4, text: '어려움을 겪었을 때 정신적으로 빠르게 회복하시는 편인가요?' },
+    { area: 4, text: '수면과 체력을 잘 관리하고 계신가요?' },
+  ];
+
+  const OPTIONS = [
+    { n: 1, label: '전혀 아니다' },
+    { n: 2, label: '아니다' },
+    { n: 3, label: '보통' },
+    { n: 4, label: '그렇다' },
+    { n: 5, label: '매우 그렇다' },
+  ];
+
+  const GRADES = [
+    {
+      key: 'g3',
+      name: 'PRO 경영자',
+      range: '85 – 100점',
+      min: 85, max: 100,
+      desc: '체계와 리더십이 이미 탄탄합니다. 팀원이 스스로 움직이고, 원장님은 전략에 집중할 수 있는 상태예요. <b>다음 단계는 "확장".</b>',
+    },
+    {
+      key: 'g2',
+      name: '성장형 경영자',
+      range: '65 – 84점',
+      min: 65, max: 84,
+      desc: '기본기는 탄탄한데 한두 영역에서 병목이 걸려 있습니다. 아래 영역별 점수 중 <b>13점 미만 구간이 성장 레버</b>예요.',
+    },
+    {
+      key: 'g1',
+      name: '관리 필요',
+      range: '45 – 64점',
+      min: 45, max: 64,
+      desc: '방향은 있지만 시스템·인력관리 체계가 얇은 상태. 원장님 개인기에 한의원이 의존하고 있어 <b>확장이 어렵습니다.</b>',
+    },
+    {
+      key: 'g4',
+      name: '긴급 점검',
+      range: '20 – 44점',
+      min: 20, max: 44,
+      desc: '"진료는 잘하지만 경영은 부담스러운 상태". 인재관리와 피드백 체계부터 차근차근 잡아야 합니다. <b>혼자 해결하기 어려운 구간.</b>',
+    },
+  ];
+
+  // ========== 상태 ==========
+  const state = {
+    currentQ: 0,
+    answers: new Array(20).fill(null),
+  };
+
+  // ========== DOM 캐시 ==========
+  const views = {
+    intro: document.getElementById('intro'),
+    quiz: document.getElementById('quiz'),
+    result: document.getElementById('result'),
+  };
+  const el = {
+    startBtn: document.getElementById('startBtn'),
+    backBtn: document.getElementById('backBtn'),
+    progressWrap: document.getElementById('progressWrap'),
+    progressFill: document.getElementById('progressFill'),
+    progressDot: document.getElementById('progressDot'),
+    progressArea: document.getElementById('progressArea'),
+    progressQ: document.getElementById('progressQ'),
+    qAreaLabel: document.getElementById('qAreaLabel'),
+    qAreaName: document.getElementById('qAreaName'),
+    qText: document.getElementById('qText'),
+    qOptions: document.getElementById('qOptions'),
+    resScore: document.getElementById('resScore'),
+    resGradeName: document.getElementById('resGradeName'),
+    gradeList: document.getElementById('gradeList'),
+    areaList: document.getElementById('areaList'),
+    lectureList: document.getElementById('lectureList'),
+    restartBtn: document.getElementById('restartBtn'),
+  };
+
+  // ========== 뷰 전환 ==========
+  function showView(name) {
+    Object.entries(views).forEach(([k, v]) => {
+      v.classList.toggle('active', k === name);
+    });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  }
+
+  // ========== Quiz 렌더링 ==========
+  function renderQuestion(direction = 'forward') {
+    const qi = state.currentQ;
+    const q = QUESTIONS[qi];
+    const area = AREAS[q.area];
+
+    // 진행 바
+    const pct = ((qi) / QUESTIONS.length) * 100;
+    el.progressFill.style.width = pct + '%';
+    el.progressFill.className = 'progress-fill ' + area.key;
+    el.progressDot.className = 'dot ' + area.key;
+    el.progressArea.textContent = area.name;
+    el.progressQ.textContent = String(qi + 1);
+    el.progressWrap.style.display = '';
+
+    // 영역 뱃지
+    el.qAreaLabel.className = 'q-area-label ' + area.key;
+    el.qAreaLabel.innerHTML = `<span>영역 ${area.num}</span><span>${area.name}</span>`;
+
+    // 문항 텍스트 (전환 애니메이션)
+    el.qText.style.animation = 'none';
+    el.qText.offsetHeight;
+    el.qText.style.animation = (direction === 'back' ? 'slideInReverse' : 'slideIn') + ' 0.26s ease-out';
+    el.qText.textContent = q.text;
+
+    // 선택지
+    el.qOptions.innerHTML = '';
+    const currentAnswer = state.answers[qi];
+    OPTIONS.forEach((opt) => {
+      const btn = document.createElement('button');
+      btn.className = 'opt-btn' + (currentAnswer === opt.n ? ' selected' : '');
+      btn.innerHTML = `<span class="num">${opt.n}</span><span>${opt.label}</span>`;
+      btn.addEventListener('click', () => handleAnswer(opt.n));
+      el.qOptions.appendChild(btn);
+    });
+
+    // 뒤로가기 버튼
+    el.backBtn.classList.toggle('hidden', qi === 0);
+  }
+
+  function handleAnswer(score) {
+    state.answers[state.currentQ] = score;
+
+    // 시각적 선택 피드백
+    const btns = el.qOptions.querySelectorAll('.opt-btn');
+    btns.forEach((b, i) => {
+      b.classList.toggle('selected', OPTIONS[i].n === score);
+    });
+
+    // 진행 바 업데이트 (즉시)
+    const pct = ((state.currentQ + 1) / QUESTIONS.length) * 100;
+    el.progressFill.style.width = pct + '%';
+
+    // 잠깐 후 다음 문항
+    setTimeout(() => {
+      if (state.currentQ < QUESTIONS.length - 1) {
+        state.currentQ++;
+        renderQuestion('forward');
+      } else {
+        finish();
+      }
+    }, 260);
+  }
+
+  function goBack() {
+    if (state.currentQ === 0) return;
+    state.currentQ--;
+    renderQuestion('back');
+  }
+
+  // ========== Result 렌더링 ==========
+  function computeAreaScores() {
+    const scores = [0, 0, 0, 0, 0];
+    QUESTIONS.forEach((q, i) => {
+      scores[q.area] += state.answers[i] || 0;
+    });
+    return scores;
+  }
+
+  function getGrade(total) {
+    for (const g of GRADES) {
+      if (total >= g.min && total <= g.max) return g;
+    }
+    return GRADES[GRADES.length - 1];
+  }
+
+  function scoreEmoji(s) {
+    if (s >= 16) return '🟢';
+    if (s >= 11) return '🟡';
+    return '🔴';
+  }
+
+  function renderResult() {
+    const areaScores = computeAreaScores();
+    const total = areaScores.reduce((a, b) => a + b, 0);
+    const grade = getGrade(total);
+
+    // 총점 카운트업
+    animateNumber(el.resScore, 0, total, 900);
+
+    // 등급명 헤더
+    el.resGradeName.textContent = grade.name;
+    el.resGradeName.className = 'result-grade-name ' + grade.key;
+
+    // STEP 1 — 등급 리스트
+    el.gradeList.innerHTML = GRADES.map((g) => `
+      <div class="grade-card ${g.key}${g.key === grade.key ? ' active' : ''}">
+        <div class="gh">
+          <span class="gname">${g.name}</span>
+          <span class="grange">${g.range}</span>
+        </div>
+        <div class="gdesc">${g.desc}</div>
+      </div>
+    `).join('');
+
+    // STEP 2 — 영역별 점수
+    el.areaList.innerHTML = AREAS.map((a, i) => {
+      const s = areaScores[i];
+      const pct = (s / 20) * 100;
+      const emoji = scoreEmoji(s);
+      return `
+        <div class="area-row ${a.key}">
+          <div class="abar-wrap">
+            <div class="atop">
+              <div class="aname">${emoji} ${a.name}<span class="aimpact">${a.impact}</span></div>
+              <div class="ascore">${s}<small>/ 20</small></div>
+            </div>
+            <div class="abar"><div class="afill" style="width:${pct}%"></div></div>
+            <div class="ahook">${a.diagnosis}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // STEP 3 — 추천 강의 (점수 낮은 영역 우선 정렬하면 더 좋지만, 기본은 순서 그대로)
+    el.lectureList.innerHTML = AREAS.map((a) => `
+      <div class="lec-card ${a.key}">
+        <h4>${a.name}</h4>
+        <div class="lec-hook">${a.hook}</div>
+        ${a.lectures.map((l) => `
+          <div class="lec-item">
+            <span class="lec-round">${l[0]}</span>
+            <span class="lec-title">${l[1]}</span>
+          </div>
+        `).join('')}
+      </div>
+    `).join('');
+
+    // 진행바·뒤로가기 숨김
+    el.progressWrap.style.display = 'none';
+    el.backBtn.classList.add('hidden');
+  }
+
+  function animateNumber(elem, from, to, duration) {
+    const start = performance.now();
+    function step(now) {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const v = Math.round(from + (to - from) * eased);
+      elem.textContent = String(v);
+      if (t < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function finish() {
+    renderResult();
+    showView('result');
+  }
+
+  function restart() {
+    state.currentQ = 0;
+    state.answers = new Array(20).fill(null);
+    el.progressWrap.style.display = 'none';
+    el.backBtn.classList.add('hidden');
+    showView('intro');
+  }
+
+  // ========== 이벤트 ==========
+  el.startBtn.addEventListener('click', () => {
+    state.currentQ = 0;
+    renderQuestion('forward');
+    showView('quiz');
+  });
+
+  el.backBtn.addEventListener('click', goBack);
+  el.restartBtn.addEventListener('click', restart);
+
+  // 키보드 단축키 (데스크톱 테스트용)
+  document.addEventListener('keydown', (e) => {
+    if (!views.quiz.classList.contains('active')) return;
+    if (e.key >= '1' && e.key <= '5') {
+      handleAnswer(parseInt(e.key, 10));
+    } else if (e.key === 'ArrowLeft' || e.key === 'Backspace') {
+      goBack();
+    }
+  });
+
+})();
+</script>
+</body>
+</html>
